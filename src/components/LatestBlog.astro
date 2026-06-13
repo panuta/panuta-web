@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+const [latestPost] = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+---
+
+{
+	latestPost && (
+		<section class="latest-blog" aria-labelledby="latest-blog-heading">
+			<p class="eyebrow">Latest blog post</p>
+			<h3 id="latest-blog-heading">
+				<a href={`/blog/${latestPost.id}/`}>{latestPost.data.title}</a>
+			</h3>
+			<p class="date">
+				<FormattedDate date={latestPost.data.pubDate} />
+			</p>
+			<p>{latestPost.data.description}</p>
+			<a class="read-more" href={`/blog/${latestPost.id}/`}>
+				Read the post
+			</a>
+		</section>
+	)
+}
+
+<style>
+	.latest-blog {
+		margin-top: 3rem;
+		padding: 1.5rem;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 12px;
+		background: rgba(255, 255, 255, 0.7);
+	}
+
+	.eyebrow {
+		margin: 0 0 0.5rem;
+		color: rgb(var(--gray));
+		font-size: 0.8em;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	h3 {
+		margin-bottom: 0.25rem;
+	}
+
+	h3 a {
+		color: rgb(var(--black));
+		text-decoration: none;
+	}
+
+	h3 a:hover {
+		color: rgb(var(--accent));
+	}
+
+	.date {
+		margin: 0 0 1rem;
+		color: rgb(var(--gray));
+	}
+
+	.read-more {
+		font-weight: 700;
+	}
+</style>
